@@ -2,12 +2,13 @@
 import { defineStore } from 'pinia';
 import { api } from 'boot/axios';
 import type {  DeviceData } from 'src/types/interface.ts';
-
 export const useDevicesStore = defineStore('devices', {
   state: () => ({
     devices: {} as Record<string, DeviceData>, // 明确指定 devices 对象的类型
     q_count: 0,
-    devices_count: 0
+    devices_count: 0,
+    map:null,
+    map_label_layer:null
   }),
   actions: {
     fetchDevices() {

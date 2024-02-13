@@ -8,11 +8,9 @@
     />
   </div>
 </template>
-
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useDevicesStore } from 'src/stores/global_var.ts'; // 引入 Pinia 存储
-
 // 定义响应式数据
 const columns = ref([
   { name: 'device_id', required: true, label: 'Device id', align: 'left', field: 'device_id', sortable: true },
@@ -23,7 +21,7 @@ const columns = ref([
   { name: 'speed_y', align: 'center', label: 'Speed y', field: 'speed_y' },
   { name: 'speed_z', align: 'center', label: 'Speed z', field: 'speed_z' },
   { name: 'posture', align: 'center', label: 'Posture', field: 'posture' },
-  { name: 'time', align: 'center', label: 'Last Update Time', field: 'time' }
+  { name: 'time', align: 'center', label: 'Last Update Time', field: 'time',sortable: true }
 ]);
 
 const devicesStore = useDevicesStore(); // 使用 Pinia 存储
