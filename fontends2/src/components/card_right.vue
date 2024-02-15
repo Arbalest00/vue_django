@@ -28,6 +28,7 @@
 <script setup>
 import { computed, watchEffect, ref, reactive } from 'vue';
 import { useDevicesStore } from 'src/stores/global_var.ts'; // 引入 Pinia 存储
+import { useRouter, useRoute } from 'vue-router'; // 引入 useRouter 和 useRoute
 const devicesStore = useDevicesStore(); // 使用 Pinia 存储
 const data = computed(() => Object.values(devicesStore.devices));
 const sortedData = computed(() => {
@@ -44,6 +45,8 @@ const sortedData = computed(() => {
 const deviceColors = ref({});
 const lastDeviceCoordinates = reactive({});
 const deviceUpdateCount = reactive({}); // 存储每个设备的更新计数
+const router = useRouter(); // 获取 router 实例
+const route = useRoute(); // 获取当前路由对象
 function getColorById(id) {
     let hash = 0;
     for (let i = 0; i < id.length; i++) {
@@ -92,14 +95,43 @@ watchEffect(() => {
                 icon: icon
             });
             devicesStore.map_label_layer.add(labelMarker);
+            if (lastCoords) { // 确保有上一个坐标点
+                const path = [lastCoords, currentCoords]; // 创建路径数组
+                const polyline = new AMap.Polyline({
+                    path: path,
+                    strokeColor: deviceColors.value[device.device_id], // 线颜色
+                    strokeOpacity: 1, // 线透明度
+                    strokeWeight: 3, // 线宽
+                    strokeStyle: "solid", // 线样式
+                });
+                devicesStore.map.add(polyline); // 将线添加到地图上
+            }
             lastDeviceCoordinates[device.device_id] = currentCoords;
-            console.log("label_add");
         }
     });
 
 });
 function setMapCenter(coordinates) {
-    if (devicesStore.map) {
+    // 检查当前路由是否为 /side0
+    if (route.path !== '/side0') {
+        // 如果不是，则先跳转到 /side0
+        router.push('/side0').then(() => {
+            // 使用 watch 或 watchEffect 来观察 devicesStore.map 的变化
+            if (devicesStore.map) {
+                devicesStore.map.setZoomAndCenter(12, coordinates);
+            }
+            else {
+                const unwatch = watch(() => devicesStore.map, (newValue) => {
+                    if (newValue) {
+                        // 当 map 实例准备好后执行定位操作
+                        newValue.setZoomAndCenter(12, coordinates);
+                        unwatch(); // 取消观察
+                    }
+                }, { immediate: true }); // immediate: true 确保立即执行
+            }
+        });
+    } else if (devicesStore.map) {
+        // 如果已经在 /side0，直接执行定位操作
         devicesStore.map.setZoomAndCenter(12, coordinates);
     }
 }

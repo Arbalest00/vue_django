@@ -14,6 +14,7 @@ onMounted(() => {
       "AMap.HawkEye", //鹰眼，显示缩略图
       "AMap.MapType", //图层切换，用于几个常用图层切换显示
       "AMap.LabelMarker",
+      "AMap.Polyline",
     ], // 需要使用的的插件列表
   })
     .then((AMap) => {
