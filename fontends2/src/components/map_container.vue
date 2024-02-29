@@ -8,7 +8,7 @@ import { useDevicesStore } from 'src/stores/global_var.ts'; // 引入 Pinia 存�
 const devicesStore = useDevicesStore(); // 使用 Pinia 存储
 onMounted(() => {
   AMapLoader.load({
-    key: "75a9eeb2953d8a0cc86b980ffd8a7c7f", // 申请好的Web端开发者Key，首次调用 load 时必填
+    key: "", // 申请好的Web端开发者Key，首次调用 load 时必填
     version: "2.0", // 指定要加载的 JSAPI 的版本，缺省时默认为 1.4.15
     plugins: [
       "AMap.HawkEye", //鹰眼，显示缩略图
@@ -19,11 +19,9 @@ onMounted(() => {
   })
     .then((AMap) => {
       devicesStore.map = new AMap.Map("container", {
-        // 设置地图容器id
         viewMode: "3D", // 是否为3D地图模式
         zoom: 1, // 初始化地图级别
-        center: [116.397428, 39.90923], // 初始化地图中心点位置
-        //mapStyle: "amap://styles/light",
+        center: [0, 0], // 初始化地图中心点位置
       });
 
       devicesStore.map.addControl(new AMap.HawkEye());

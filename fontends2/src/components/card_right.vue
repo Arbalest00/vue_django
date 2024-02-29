@@ -30,7 +30,7 @@ import { computed, watchEffect, ref, reactive } from 'vue';
 import { useDevicesStore } from 'src/stores/global_var.ts'; // 引入 Pinia 存储
 import { useRouter, useRoute } from 'vue-router'; // 引入 useRouter 和 useRoute
 const devicesStore = useDevicesStore(); // 使用 Pinia 存储
-const data = computed(() => Object.values(devicesStore.devices));
+//const data = computed(() => Object.values(devicesStore.devices));
 const sortedData = computed(() => {
     const devicesArray = Object.values(devicesStore.devices);
     const sorted = devicesArray.sort((a, b) => {
@@ -68,12 +68,6 @@ watchEffect(() => {
         }
         if ((!lastCoords || lastCoords[0] !== currentCoords[0] || lastCoords[1] !== currentCoords[1]) && devicesStore.map_label_layer != null) {
             deviceUpdateCount[device.device_id] += 1; // 更新计数器
-            const icon = {
-                type: 'image',
-                image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
-                size: [6, 9],
-                anchor: 'bottom-center',
-            };
             const text = {
                 content: device.device_id + " (" + deviceUpdateCount[device.device_id] + "号轨迹)", //要展示的文字内容
                 direction: "right", //文字方向，有 icon 时为围绕文字的方向，没有 icon 时，则为相对 position 的位置
@@ -92,7 +86,6 @@ watchEffect(() => {
                 zIndex: device.altitude,
                 rank: 1, //避让优先级
                 text: text, //标注文本，将 text 对象传给 text 属性
-                icon: icon
             });
             devicesStore.map_label_layer.add(labelMarker);
             if (lastCoords) { // 确保有上一个坐标点
@@ -101,8 +94,9 @@ watchEffect(() => {
                     path: path,
                     strokeColor: deviceColors.value[device.device_id], // 线颜色
                     strokeOpacity: 1, // 线透明度
-                    strokeWeight: 3, // 线宽
+                    strokeWeight: 6, // 线宽
                     strokeStyle: "solid", // 线样式
+                    showDir:true,
                 });
                 devicesStore.map.add(polyline); // 将线添加到地图上
             }
@@ -112,22 +106,19 @@ watchEffect(() => {
 
 });
 function setMapCenter(coordinates) {
-    // 检查当前路由是否为 /side0
     if (route.path !== '/side0') {
-        // 如果不是，则先跳转到 /side0
         router.push('/side0').then(() => {
-            // 使用 watch 或 watchEffect 来观察 devicesStore.map 的变化
+            //以下这段虽然看上去很合理，但是屁用都没有
             if (devicesStore.map) {
                 devicesStore.map.setZoomAndCenter(12, coordinates);
             }
             else {
                 const unwatch = watch(() => devicesStore.map, (newValue) => {
                     if (newValue) {
-                        // 当 map 实例准备好后执行定位操作
                         newValue.setZoomAndCenter(12, coordinates);
-                        unwatch(); // 取消观察
+                        unwatch();
                     }
-                }, { immediate: true }); // immediate: true 确保立即执行
+                }, { immediate: true });
             }
         });
     } else if (devicesStore.map) {
@@ -138,7 +129,6 @@ function setMapCenter(coordinates) {
 function timeSince(dateString) {
     const date = new Date(dateString);
     const seconds = Math.floor((new Date() - date) / 1000);
-
     let interval = seconds / 31536000;
     if (interval > 1) {
         return Math.floor(Math.max(interval, 0)) + " 年前";
@@ -159,7 +149,6 @@ function timeSince(dateString) {
     if (interval > 1) {
         return Math.floor(Math.max(interval, 0)) + " 分钟前";
     }
-    // 直接使用Math.max确保秒数不会小于0
     return Math.floor(Math.max(seconds, 0)) + " 秒前";
 }
 

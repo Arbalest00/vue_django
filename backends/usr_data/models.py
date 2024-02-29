@@ -1,6 +1,4 @@
 from django.db import models
-
-# Create your models here.
 class usr_data(models.Model):
     device_id = models.CharField(max_length=100,unique=True)
     x = models.FloatField()
@@ -13,3 +11,4 @@ class usr_data(models.Model):
     time = models.DateTimeField(auto_now=True)
     class Meta:
         db_table = 'usr_data'
+        

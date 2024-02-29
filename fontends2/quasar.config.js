@@ -87,7 +87,6 @@ module.exports = configure(function (/* ctx */) {
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer
     devServer: {
-      // https: true
       port:8501,
       proxy: {
         '^/api': {
@@ -205,7 +204,7 @@ module.exports = configure(function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'fontedns2'
+        appId: 'fontends2'
       }
     },
 

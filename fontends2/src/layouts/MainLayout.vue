@@ -3,7 +3,6 @@
 
     <q-header elevated class="bg-primary text-white" height-hint="98">
       <q-toolbar class="toolbar_top">
-
         <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title>
           Drone WEBUI
@@ -20,7 +19,6 @@
               <q-item-section avatar>
                 <q-icon name="inbox" />
               </q-item-section>
-
               <q-item-section>
                 Main
               </q-item-section>
@@ -31,7 +29,6 @@
               <q-item-section avatar>
                 <q-icon name="drafts" />
               </q-item-section>
-
               <q-item-section>
                 Map
               </q-item-section>
@@ -103,9 +100,9 @@ onMounted(() => {
   setInterval(() => {
     currentTime.value = formatTime();
   }, 1000);
-  devicesStore.fetchDevices(); // 从 Pinia 存储获取设备数据
+  devicesStore.fetchDevices();
   setInterval(() => {
-    devicesStore.fetchDevices(); // 定期获取设备数据
+    devicesStore.fetchDevices(); 
   }, 200); // 每0.2秒更新一次
 });
 </script>
